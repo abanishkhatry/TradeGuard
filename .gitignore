@@ -1,0 +1,25 @@
+# Node
+node_modules/
+dist/
+.next/
+
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+
+# Spark
+derby.log
+
+# Models
+models/artifacts/*
+!models/artifacts/.gitkeep
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
