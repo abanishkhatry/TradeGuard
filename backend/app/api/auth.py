@@ -7,13 +7,13 @@ from fastapi import APIRouter, Depends, HTTPException
 # Importing Session from SQLAlchemy to interact with the database.
 from sqlalchemy.orm import Session
 # Importing the UserLogin schema to validate the login request data.
-from app.schemas.user import UserLogin
+from app.schemas.user import UserLogin, UserCreate
 # Importing the database session created in core/database.py. This is what creates the actual DB connection for each request.
 from app.core.database import SessionLocal
 # This is the SQLAlchemy model representing a row in the users table. We use this to query user data from the database.
 from app.models.user import User
 # this helps us to verify passwords.
-from app.utils.password import verify_password
+from app.utils.password import verify_password, hash_password
 # This creates JWT tokens for authenticated users.
 from app.core.security import create_access_token
 
@@ -42,3 +42,25 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     token = create_access_token({"sub": db_user.email, "role": db_user.role})
     # Return the token in the response. 
     return {"access_token": token, "token_type": "bearer"}
+
+# This declares an HTTP Post endpoint at the path /register for user registration. 
+@router.post("/register")
+# The register function takes a UserCreate object (which contains email and password) and a database session as parameters.
+def register(user: UserCreate, db: Session = Depends(get_db)):
+    # Check if email already exists
+    existing_user = db.query(User).filter(User.email == user.email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Create new user
+    new_user = User(
+        email=user.email,
+        hashed_password=hash_password(user.password),
+        role="user"   # default role
+    )
+    # Add the new user to the database
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return {"message": "User registered successfully"}
