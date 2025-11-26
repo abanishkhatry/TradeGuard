@@ -12,13 +12,11 @@ from sqlalchemy import create_engine
 # declarative_base is a factory function that constructs a base class for all the database models we will define later. SQLAlchemy uses this base class to map Python classes to database tables.
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-import os
+from app.core.config import settings
 
-# Here, we look for the DATABASE_URL environment variable to get the database connection string. If it's not set, we use a default connection string that points to a local PostgreSQL database.
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/tradeguard")
 
 # creates the database engine using the connection string. The engine will handle the actual connection to the database.
-engine = create_engine(DATABASE_URL)
+engine = create_engine(settings.DATABASE_URL, echo = False)
 # creates a configured "Session" class that will be used to create session objects for interacting with the database.
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 

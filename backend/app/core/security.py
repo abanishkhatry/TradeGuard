@@ -3,15 +3,15 @@ This file is responsible for creating JSON Web Tokens (JWTs) for user authentica
 """
 
 # Importing the PyJWT library to create and manage JSON Web Tokens (JWTs).
-import jwt
+from jose import jwt
 from datetime import datetime, timedelta
-import os
+from app.core.config import settings
 
 # Load environment variables from a .env file into the application's environment.
-SECRET_KEY = os.getenv("JWT_SECRET", "devsecret")
+SECRET_KEY = settings.JWT_SECRET_KEY
 # The algorithm used to sign the JWTs. It is a symmetric algorithm that uses the same key for both signing and verification.
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ALGORITHM = settings.JWT_ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 # Function that creates a JWT access token. It takes a dictionary data as input, which typically contains user information (like user ID or email) that you want to include in the token's payload. Then it adds an expiration time to the token, encodes it using the SECRET_KEY and ALGORITHM, and returns the generated token.
 def create_access_token(data: dict):
