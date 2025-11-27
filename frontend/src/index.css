@@ -1,3 +1,8 @@
+/* stylelint-disable at-rule-no-unknown */
+/* TailwindCSS allows special at-rules */
+
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
